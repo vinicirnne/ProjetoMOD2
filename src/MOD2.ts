@@ -1,3 +1,4 @@
+import { get } from "http";
 import promptSync from "prompt-sync"
 const prompt = promptSync();
 
@@ -80,9 +81,10 @@ console.log("4 - Gerar relatorio de estoque");
 console.log("5 - Fechar Programa");
 
 do{
+try{
 
 const opcao = Number(prompt("Qual operação deseja realizar: "));
-if(opcao < 1 || opcao > 5){
+if(opcao < 1 || opcao > 5 || isNaN(opcao)){
     throw new Error("Valido apenas valores de 1 a 5");
 }
 
@@ -92,6 +94,9 @@ const nome = prompt("Nome do Produto: ");
 const codigo = prompt("Codigo do produto: ");
 const preco = Number(prompt("Preço do produto: "));
 const quantidade = Number(prompt("quantidade adicionada: "));
+if(isNaN(preco) || isNaN(quantidade)){
+    throw new Error("Preço e quantidade apenas aceita numeros")
+}
 const produto = new Produto(nome,codigo,preco,quantidade);
 estoque.gerenciarProduto(produto);
 }
@@ -108,16 +113,21 @@ const nome = prompt("Nome do produto para saida: ");
 const produto = estoque.buscarProduto(nome);
 if(produto){
     const saida = Number(prompt("Quantidade da saida: "));
+    if(saida > produto.getqtd() || isNaN(saida)){
+        throw new Error("Quantidade insuficiente no armazenamento OU operação não reconhecida ")
+    }
     new Saida().registrarAlteracao(produto,saida)
+}else{
+ throw new Error(`Nenhum produto cadastrado!`)
 }
 }
 if(opcao == 4){
     estoque.relatorio();
 }
-} while(true);
-
-/* const p1 = new Produto("Sabonete liquido", "3", 10, 10)
-const E = new Entrada();
-E.registrarAlteracao(p1,10);
-const e1 = new Estoque
-e1.relatorio(p1); */
+if(opcao == 5){
+    console.log("Encerrando programa"); break;
+}
+}catch(erro){
+    console.log("Erro:", (erro as Error).message);
+}
+}while(true);
