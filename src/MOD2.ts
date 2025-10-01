@@ -142,6 +142,9 @@ do {
       const produto = estoque.buscarProduto(nome); //Procura o nome do Produto no estoque para realizar a movimentação
       if (produto) {
         const entrada = Number(prompt("Quantidade de entrada: "));
+        if(isNaN(entrada)){
+            throw new Error("Entrada não é um numero");
+        }
         new Entrada().registrarAlteracao(produto, entrada);
       } else {
         throw new Error("Nenhum produto cadastrado!!"); //Identifica o cadastro de nenhum produto
